@@ -1,9 +1,12 @@
+"""
+Game state management system
+"""
 import pygame
 import sys
 from settings import (
-    MENU, GAMEPLAY, PAUSE, GAMEOVER, CONTROLS, LEVELSELECT,
-    MENU_OPTIONS, LEVEL_OPTIONS, PAUSE_OPTIONS, GAMEOVER_OPTIONS,
-    WIDTH, HEIGHT, GROUND_LEVEL
+    MENU, GAMEPLAY, PAUSE, GAMEOVER, CONTROLS, LEVELSELECT, VICTORY,
+    MENU_OPTIONS, LEVEL_OPTIONS, PAUSE_OPTIONS, GAMEOVER_OPTIONS, VICTORY_OPTIONS,
+    WIDTH, HEIGHT, GROUND_LEVEL, MAX_WAVES
 )
 from player import Player
 from enemy import Zombie, spawn_wave
@@ -42,7 +45,8 @@ class GameStateManager:
             CONTROLS: ControlsState(self),
             GAMEPLAY: None,  # Will be initialized when needed
             PAUSE: None,     # Will be initialized when needed
-            GAMEOVER: None   # Will be initialized when needed
+            GAMEOVER: None,  # Will be initialized when needed
+            VICTORY: None    # Will be initialized when needed
         }
         self.current_state = MENU
         self.debug_mode = False
@@ -73,6 +77,13 @@ class GameStateManager:
             # Create game over state with final score
             score = kwargs.get('score', 0)
             self.states[GAMEOVER] = GameOverState(self, score)
+            
+        elif state_id == VICTORY:
+            # Create victory state with score and wave count
+            score = kwargs.get('score', 0)
+            wave = kwargs.get('wave', MAX_WAVES)
+            level = kwargs.get('level', 1)
+            self.states[VICTORY] = VictoryState(self, score, wave, level)
         
         self.current_state = state_id
     
@@ -183,7 +194,7 @@ class GameplayState(GameState):
         self.player = Player(100, GROUND_LEVEL - 60)
         
         # Level setup
-        self.platforms = create_level(level)
+        self.platforms, self.obstacles = create_level(level)
         
         # Game elements
         self.enemies = []
@@ -236,6 +247,31 @@ class GameplayState(GameState):
             self.camera_offset_x += self.player.x - WIDTH / 3
             self.player.x = WIDTH / 3  # Keep player position fixed on screen
         
+        # Check obstacles for player collision
+        player_world_x = self.player.x + self.camera_offset_x
+        for obstacle in self.obstacles:
+            if obstacle.check_collision(player_world_x, self.player.y, self.player.width, self.player.height):
+                # If obstacle blocks player, push them back
+                if obstacle.blocks_player:
+                    # Push left or right depending on approach direction
+                    if player_world_x < obstacle.x + obstacle.width / 2:
+                        # Push player left
+                        correction = obstacle.x - (player_world_x + self.player.width)
+                        self.player.x += correction
+                    else:
+                        # Push player right
+                        correction = (obstacle.x + obstacle.width) - player_world_x
+                        self.player.x += correction
+                
+                # If obstacle damages player
+                if obstacle.damage > 0:
+                    self.player.take_damage(obstacle.damage)
+                    add_debug(f"Player hit obstacle! Damage: {obstacle.damage}")
+                    
+                    # Check if player is dead
+                    if self.player.health <= 0:
+                        self.game_manager.set_state(GAMEOVER, score=self.score)
+        
         # Update enemies
         for enemy in self.enemies[:]:
             # Calculate player's world position
@@ -243,6 +279,17 @@ class GameplayState(GameState):
             
             # Update enemy
             enemy.update(player_world_x, self.platforms)
+            
+            # Check for enemy collision with obstacles
+            for obstacle in self.obstacles:
+                if obstacle.blocks_enemies and obstacle.check_collision(
+                    enemy.x, enemy.y, enemy.width, enemy.height
+                ):
+                    # Simple bounce logic - reverse direction
+                    if enemy.x < obstacle.x:
+                        enemy.x -= enemy.speed * 2
+                    else:
+                        enemy.x += enemy.speed * 2
             
             # Check for collision with player
             if enemy.check_collision_with_player(
@@ -259,6 +306,19 @@ class GameplayState(GameState):
         # Update projectiles and check for offscreen/age
         for projectile in self.projectiles[:]:
             projectile.update()
+            
+            # Check for collision with obstacles
+            for obstacle in self.obstacles:
+                if obstacle.blocks_projectiles and obstacle.check_collision(
+                    projectile.x, projectile.y, projectile.radius*2, projectile.radius*2
+                ):
+                    if projectile in self.projectiles:
+                        self.projectiles.remove(projectile)
+                    break
+            
+            # Skip if projectile was removed by obstacle
+            if projectile not in self.projectiles:
+                continue
             
             # Remove projectiles that are too old or off-screen
             if projectile.is_offscreen(self.camera_offset_x, WIDTH, HEIGHT):
@@ -283,17 +343,23 @@ class GameplayState(GameState):
         # Check if wave is completed
         if not self.enemies:
             self.wave += 1
-            self.wave_enemies_remaining = 5 + self.wave
-            self.enemies = spawn_wave(
-                self.player.x, 
-                self.camera_offset_x, 
-                self.wave_enemies_remaining
-            )
-            add_debug(f"Wave {self.wave} started! Enemies: {self.wave_enemies_remaining}")
+            
+            # Check for victory condition
+            if self.wave > MAX_WAVES:
+                add_debug("Victory! All waves completed!")
+                self.game_manager.set_state(VICTORY, score=self.score, wave=self.wave-1, level=self.level)
+            else:
+                self.wave_enemies_remaining = 5 + self.wave
+                self.enemies = spawn_wave(
+                    self.player.x, 
+                    self.camera_offset_x, 
+                    self.wave_enemies_remaining
+                )
+                add_debug(f"Wave {self.wave}/{MAX_WAVES} started! Enemies: {self.wave_enemies_remaining}")
     
     def draw(self, screen):
         draw_gameplay(
-            screen, self.player, self.platforms, self.enemies, 
+            screen, self.player, self.platforms, self.obstacles, self.enemies, 
             self.projectiles, self.score, self.wave, 
             self.camera_offset_x, self.game_manager.debug_mode
         )
@@ -357,3 +423,35 @@ class GameOverState(GameState):
     
     def draw(self, screen):
         draw_gameover(screen, self.score, self.selected_option)
+
+
+class VictoryState(GameState):
+    """Victory state when player completes all waves"""
+    
+    def __init__(self, game_manager, score, wave, level):
+        super().__init__(game_manager)
+        self.score = score
+        self.wave = wave
+        self.level = level
+        self.selected_option = 0
+    
+    def handle_events(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
+                self.selected_option = (self.selected_option - 1) % len(VICTORY_OPTIONS)
+            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                self.selected_option = (self.selected_option + 1) % len(VICTORY_OPTIONS)
+            elif event.key == pygame.K_RETURN:
+                if VICTORY_OPTIONS[self.selected_option] == "Next Level":
+                    # For now, just restart at level 1 since we only have implementation for level 1
+                    next_level = min(self.level + 1, 2)  # Max level is 2 for now
+                    self.game_manager.set_state(GAMEPLAY, level=next_level, restart=True)
+                elif VICTORY_OPTIONS[self.selected_option] == "Main Menu":
+                    self.game_manager.set_state(MENU)
+    
+    def update(self):
+        pass
+    
+    def draw(self, screen):
+        from ui import draw_victory
+        draw_victory(screen, self.score, self.wave, self.selected_option)

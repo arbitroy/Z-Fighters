@@ -17,6 +17,7 @@ PAUSE = 2
 GAMEOVER = 3
 CONTROLS = 4
 LEVELSELECT = 5
+VICTORY = 6
 
 # Colors
 WHITE = (255, 255, 255)
@@ -42,6 +43,10 @@ MENU_OPTIONS = ["Play", "Level Select", "Controls", "Exit"]
 LEVEL_OPTIONS = ["Level 1", "Level 2 (Locked)", "Back"]
 PAUSE_OPTIONS = ["Resume", "Controls", "Quit to Menu"]
 GAMEOVER_OPTIONS = ["Try Again", "Main Menu"]
+VICTORY_OPTIONS = ["Next Level", "Main Menu"]
+
+# Game difficulty settings
+MAX_WAVES = 10  # Number of waves to complete for victory
 
 # Player settings
 PLAYER_WIDTH = 40

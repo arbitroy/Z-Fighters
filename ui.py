@@ -1,8 +1,11 @@
+"""
+UI rendering functions for different game states
+"""
 import pygame
 from settings import (
     TITLE_FONT, MENU_FONT, UI_FONT, WIDTH, HEIGHT, 
     RED, WHITE, YELLOW, BLACK, MENU_OPTIONS, LEVEL_OPTIONS,
-    PAUSE_OPTIONS, GAMEOVER_OPTIONS
+    PAUSE_OPTIONS, GAMEOVER_OPTIONS, VICTORY_OPTIONS, MAX_WAVES
 )
 from debug import draw_debug_info
 
@@ -90,10 +93,24 @@ def draw_gameplay_ui(screen, player, score, wave):
     screen.blit(score_text, (10, 70))
     
     # Draw wave counter
-    wave_text = UI_FONT.render(f"Wave: {wave}", True, WHITE)
+    wave_text = UI_FONT.render(f"Wave: {wave}/{MAX_WAVES}", True, WHITE)
     screen.blit(wave_text, (10, 100))
+    
+    # Draw progress bar for waves
+    progress_width = 200
+    progress_height = 10
+    progress_x = 10
+    progress_y = 130
+    
+    # Progress background
+    pygame.draw.rect(screen, (100, 100, 100), (progress_x, progress_y, progress_width, progress_height))
+    
+    # Progress fill
+    wave_progress = min(1.0, wave / MAX_WAVES)
+    pygame.draw.rect(screen, (0, 255, 0), 
+                    (progress_x, progress_y, int(progress_width * wave_progress), progress_height))
 
-def draw_gameplay(screen, player, platforms, enemies, projectiles, score, wave, camera_offset_x, debug_mode):
+def draw_gameplay(screen, player, platforms, obstacles, enemies, projectiles, score, wave, camera_offset_x, debug_mode):
     """Draw the gameplay state"""
     from level import draw_level_background
     
@@ -103,6 +120,10 @@ def draw_gameplay(screen, player, platforms, enemies, projectiles, score, wave, 
     # Draw platforms
     for platform in platforms:
         platform.draw(screen, camera_offset_x)
+    
+    # Draw obstacles
+    for obstacle in obstacles:
+        obstacle.draw(screen, camera_offset_x)
     
     # Draw player
     player.draw(screen, debug_mode)
@@ -159,3 +180,40 @@ def draw_gameover(screen, score, selected_option):
         color = RED if i == selected_option else WHITE
         text = MENU_FONT.render(option, True, color)
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, 300 + i * 60))
+
+def draw_victory(screen, score, wave, selected_option):
+    """Draw the victory screen"""
+    # Create a gradient background (dark blue to light blue)
+    for y in range(HEIGHT):
+        # Calculate color based on y position
+        blue_val = int(50 + (y / HEIGHT) * 150)
+        pygame.draw.line(screen, (0, 0, blue_val), (0, y), (WIDTH, y))
+    
+    # Draw victory banner
+    banner_rect = pygame.Rect(WIDTH//2 - 300, 80, 600, 100)
+    pygame.draw.rect(screen, (50, 50, 100), banner_rect)
+    pygame.draw.rect(screen, YELLOW, banner_rect, 3)
+    
+    # Victory text
+    title_text = TITLE_FONT.render("VICTORY!", True, YELLOW)
+    screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 100))
+    
+    # Stats section
+    pygame.draw.rect(screen, (0, 0, 0, 128), (WIDTH//2 - 200, 200, 400, 150))
+    
+    # Score and wave text
+    score_text = MENU_FONT.render(f"Final Score: {score}", True, WHITE)
+    screen.blit(score_text, (WIDTH // 2 - score_text.get_width() // 2, 220))
+    
+    wave_text = MENU_FONT.render(f"Waves Completed: {wave}/{MAX_WAVES}", True, WHITE)
+    screen.blit(wave_text, (WIDTH // 2 - wave_text.get_width() // 2, 270))
+    
+    # Congratulatory message
+    congrats_text = UI_FONT.render("You have defeated all the zombie waves!", True, WHITE)
+    screen.blit(congrats_text, (WIDTH // 2 - congrats_text.get_width() // 2, 320))
+    
+    # Menu options
+    for i, option in enumerate(VICTORY_OPTIONS):
+        color = YELLOW if i == selected_option else WHITE
+        text = MENU_FONT.render(option, True, color)
+        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, 400 + i * 60))
