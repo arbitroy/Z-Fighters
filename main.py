@@ -3,11 +3,6 @@ import sys
 import os
 from game_states import GameStateManager
 from settings import WIDTH, HEIGHT, FPS
-
-# Print current directory and files to debug
-print("Current working directory:", os.getcwd())
-print("Files in directory:", os.listdir())
-
 # Initialize pygame
 pygame.init()
 
