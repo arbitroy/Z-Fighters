@@ -1,0 +1,66 @@
+=== Debug Log Started at 2025-03-27 17:36:01 ===
+
+[17:36:02] === STARTUP DIAGNOSTICS ===
+[17:36:02] Assets directory exists
+[17:36:02] Player assets directory exists
+[17:36:02] Found 16 files in assets/player/
+[17:36:02] Idle right sprites: 4
+[17:36:02] Walking right sprites: 4
+[17:36:02] Idle left sprites: 4
+[17:36:02] Walking left sprites: 4
+[17:36:02]   Found: idle_left_0.png
+[17:36:02]   Found: idle_left_1.png
+[17:36:02]   Found: idle_left_2.png
+[17:36:02]   Found: idle_left_3.png
+[17:36:02]   Found: idle_right_0.png
+[17:36:02]   Found: idle_right_1.png
+[17:36:02]   Found: idle_right_2.png
+[17:36:02]   Found: idle_right_3.png
+[17:36:02]   Found: walking_left_0.png
+[17:36:02]   Found: walking_left_1.png
+[17:36:02]   Found: walking_left_2.png
+[17:36:02]   Found: walking_left_3.png
+[17:36:02]   Found: walking_right_0.png
+[17:36:02]   Found: walking_right_1.png
+[17:36:02]   Found: walking_right_2.png
+[17:36:02]   Found: walking_right_3.png
+[17:36:02] === END DIAGNOSTICS ===
+[17:36:11] Player: Initializing sprite system
+[17:36:11] Player: Loading sprites...
+[17:36:11] Player: Found 16 files in assets/player/
+[17:36:11] Player: Found file: idle_left_0.png
+[17:36:11] Player: Found file: idle_left_1.png
+[17:36:11] Player: Found file: idle_left_2.png
+[17:36:11] Player: Found file: idle_left_3.png
+[17:36:11] Player: Found file: idle_right_0.png
+[17:36:11] Player: ...and 11 more files
+[17:36:11] Player: Trying to load assets/player/idle_right_0.png
+[17:36:11] Player: Successfully loaded assets/player/idle_right_0.png
+[17:36:11] Player: Trying to load assets/player/idle_right_1.png
+[17:36:11] Player: Successfully loaded assets/player/idle_right_1.png
+[17:36:11] Player: Trying to load assets/player/idle_right_2.png
+[17:36:11] Player: Successfully loaded assets/player/idle_right_2.png
+[17:36:11] Player: Trying to load assets/player/idle_right_3.png
+[17:36:11] Player: Successfully loaded assets/player/idle_right_3.png
+[17:36:11] Player: Loaded 4/4 idle_right sprites
+[17:36:11] Player: Trying to load assets/player/walking_right_0.png
+[17:36:11] Player: Successfully loaded assets/player/walking_right_0.png
+[17:36:11] Player: Trying to load assets/player/walking_right_1.png
+[17:36:11] Player: Successfully loaded assets/player/walking_right_1.png
+[17:36:11] Player: Trying to load assets/player/walking_right_2.png
+[17:36:11] Player: Successfully loaded assets/player/walking_right_2.png
+[17:36:11] Player: Trying to load assets/player/walking_right_3.png
+[17:36:11] Player: Successfully loaded assets/player/walking_right_3.png
+[17:36:11] Player: Loaded 4/4 walking_right sprites
+[17:36:11] Player: Left-facing sprites exist? True
+[17:36:11] Player: Loaded 4/4 idle_left sprites
+[17:36:11] Player: Loaded 4/4 walking_left sprites
+[17:36:11] Player: Successfully loaded all required sprites
+[17:36:11] Player: Initialization complete
+[17:36:11] Spawned 6 zombies
+--- Debug messages cleared ---
+[17:36:15] Player jumped
+[17:36:16] Player jumped
+[17:36:17] Player jumped
+[17:36:18] Player jumped
+[17:36:26] Game closing

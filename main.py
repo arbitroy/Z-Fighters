@@ -3,8 +3,54 @@ import sys
 import os
 from game_states import GameStateManager
 from settings import WIDTH, HEIGHT, FPS
+from debug import add_debug, log_to_file
+
+# Add startup diagnostics
+def run_diagnostics():
+    """Run startup diagnostics to check for sprite files"""
+    add_debug("=== STARTUP DIAGNOSTICS ===")
+    
+    # Check for assets directory
+    if os.path.exists("assets"):
+        add_debug("Assets directory exists")
+        
+        # Check for player directory
+        if os.path.exists("assets/player"):
+            add_debug("Player assets directory exists")
+            
+            # List files in player directory
+            try:
+                files = os.listdir("assets/player")
+                add_debug(f"Found {len(files)} files in assets/player/")
+                
+                # Look for specific sprite patterns
+                idle_right = [f for f in files if f.startswith("idle_right_")]
+                walking_right = [f for f in files if f.startswith("walking_right_")]
+                idle_left = [f for f in files if f.startswith("idle_left_")]
+                walking_left = [f for f in files if f.startswith("walking_left_")]
+                
+                add_debug(f"Idle right sprites: {len(idle_right)}")
+                add_debug(f"Walking right sprites: {len(walking_right)}")
+                add_debug(f"Idle left sprites: {len(idle_left)}")
+                add_debug(f"Walking left sprites: {len(walking_left)}")
+                
+                # List all files for reference
+                for file in files:
+                    add_debug(f"  Found: {file}")
+            except Exception as e:
+                add_debug(f"Error listing files: {e}")
+        else:
+            add_debug("Player assets directory MISSING")
+    else:
+        add_debug("Assets directory MISSING")
+    
+    add_debug("=== END DIAGNOSTICS ===")
+
 # Initialize pygame
 pygame.init()
+
+# Run diagnostics before creating the game window
+run_diagnostics()
 
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -38,6 +84,9 @@ while running:
     
     # Control the frame rate
     clock.tick(FPS)
+
+# Log game closing
+add_debug("Game closing")
 
 # Quit pygame
 pygame.quit()
