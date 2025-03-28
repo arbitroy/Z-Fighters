@@ -80,19 +80,21 @@ class Player:
             for i in range(4):
                 sprite_path = f"assets/player/idle_right_{i}.png"
                 if os.path.exists(sprite_path):
-                    # Load sprite without scaling - keep original size
-                    sprite = pygame.image.load(sprite_path).convert_alpha()
-                    sprites["idle"]["right"].append(sprite)
-                    add_debug(f"Player: Loaded {sprite_path}, size: {sprite.get_size()}")
+                    # Load sprite and scale it to match player dimensions
+                    original_sprite = pygame.image.load(sprite_path).convert_alpha()
+                    scaled_sprite = pygame.transform.scale(original_sprite, (self.width, self.height))
+                    sprites["idle"]["right"].append(scaled_sprite)
+                    add_debug(f"Player: Loaded and scaled {sprite_path}, new size: {scaled_sprite.get_size()}")
             
             # Load walking right sprites
             for i in range(4):
                 sprite_path = f"assets/player/walking_right_{i}.png"
                 if os.path.exists(sprite_path):
-                    # Load sprite without scaling
-                    sprite = pygame.image.load(sprite_path).convert_alpha()
-                    sprites["walking"]["right"].append(sprite)
-                    add_debug(f"Player: Loaded {sprite_path}, size: {sprite.get_size()}")
+                    # Load sprite and scale it to match player dimensions
+                    original_sprite = pygame.image.load(sprite_path).convert_alpha()
+                    scaled_sprite = pygame.transform.scale(original_sprite, (self.width, self.height))
+                    sprites["walking"]["right"].append(scaled_sprite)
+                    add_debug(f"Player: Loaded and scaled {sprite_path}, new size: {scaled_sprite.get_size()}")
             
             # Check if we have left sprites or need to flip right sprites
             left_exists = os.path.exists("assets/player/idle_left_0.png")
@@ -102,17 +104,19 @@ class Player:
                 for i in range(4):
                     sprite_path = f"assets/player/idle_left_{i}.png"
                     if os.path.exists(sprite_path):
-                        # Load sprite without scaling
-                        sprite = pygame.image.load(sprite_path).convert_alpha()
-                        sprites["idle"]["left"].append(sprite)
+                        # Load sprite and scale it to match player dimensions
+                        original_sprite = pygame.image.load(sprite_path).convert_alpha()
+                        scaled_sprite = pygame.transform.scale(original_sprite, (self.width, self.height))
+                        sprites["idle"]["left"].append(scaled_sprite)
                 
                 # Load walking left sprites
                 for i in range(4):
                     sprite_path = f"assets/player/walking_left_{i}.png"
                     if os.path.exists(sprite_path):
-                        # Load sprite without scaling
-                        sprite = pygame.image.load(sprite_path).convert_alpha()
-                        sprites["walking"]["left"].append(sprite)
+                        # Load sprite and scale it to match player dimensions
+                        original_sprite = pygame.image.load(sprite_path).convert_alpha()
+                        scaled_sprite = pygame.transform.scale(original_sprite, (self.width, self.height))
+                        sprites["walking"]["left"].append(scaled_sprite)
             else:
                 # Flip right sprites for left
                 for sprite in sprites["idle"]["right"]:
@@ -130,7 +134,7 @@ class Player:
             self.create_fallback_sprites(sprites)
         
         return sprites
-    
+        
     def create_fallback_sprites(self, sprites):
         """Create simple rectangle sprites as fallbacks"""
         add_debug("Player: Creating fallback sprite rectangles")
