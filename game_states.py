@@ -370,7 +370,8 @@ class GameplayState(GameState):
         from level import draw_level_background
         
         # Draw level background with parallax effect
-        draw_level_background(screen, self.camera_offset_x)
+        draw_level_background(screen, self.camera_offset_x, self.game_manager.debug_mode)
+
         
         # Draw platforms
         for platform in self.platforms:

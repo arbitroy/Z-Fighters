@@ -4,9 +4,12 @@ Level management classes and functions
 import pygame
 import os
 from settings import WIDTH, HEIGHT, GROUND_LEVEL, GRAY
+from debug import add_debug
 
 # Create a parallax background instance - will be initialized later
 parallax_background = None
+# Global variable to hold the ground tile image
+ground_tile_img = None
 
 def initialize_level_graphics():
     """Initialize level graphics, including the parallax background"""
@@ -176,13 +179,14 @@ def create_level(level_number):
     
     return platforms, obstacles
 
-def draw_level_background(screen, camera_offset_x=0):
+def draw_level_background(screen, camera_offset_x=0, debug_mode=False):
     """
     Draw the level background (sky, ground, etc.) with parallax scrolling
     
     Args:
         screen (pygame.Surface): The screen to draw on
         camera_offset_x (float): The camera's x offset for parallax effect
+        debug_mode (bool): Whether to draw debug information
     """
     # Check if parallax background is initialized
     global parallax_background
@@ -216,7 +220,71 @@ def draw_level_background(screen, camera_offset_x=0):
         # Draw distant mountains
         pygame.draw.polygon(screen, (100, 100, 100), [(0, 200), (100, 120), (200, 180), (300, 100), (400, 160), (WIDTH, 200)])
     
-    # Always draw ground
-    # This is drawn after the parallax background to ensure it's on top
-    pygame.draw.rect(screen, (101, 67, 33), (0, GROUND_LEVEL, WIDTH, HEIGHT - GROUND_LEVEL))  # Brown ground
-    pygame.draw.rect(screen, (76, 153, 0), (0, GROUND_LEVEL, WIDTH, 5))  # Green grass line
+    # Draw ground with tile image instead of solid color
+    draw_ground_tiles(screen, camera_offset_x, debug_mode)
+
+def draw_ground_tiles(screen, camera_offset_x, debug_mode=False):
+    """Draw the ground using the ground_tile.png image"""
+    global ground_tile_img
+    
+    # Load the ground tile image if not already loaded
+    if ground_tile_img is None:
+        try:
+            # Look for the ground tile in several possible locations
+            possible_paths = [
+                os.path.join('assets', 'environment', 'ground_tile.png'),
+                os.path.join('assets', 'tiles', 'ground_tile.png'),
+                os.path.join('assets', 'ground_tile.png'),
+                'ground_tile.png'
+            ]
+            
+            for path in possible_paths:
+                if os.path.exists(path):
+                    # Load the ground tile
+                    original_tile = pygame.image.load(path).convert_alpha()
+                    
+                    # Scale the tile to be more visible (32x32 instead of 16x16)
+                    ground_tile_img = pygame.transform.scale(original_tile, (32, 32))
+                    
+                    add_debug(f"Ground tile loaded from {path}")
+                    break
+            
+            # If we didn't find the image, create a fallback
+            if ground_tile_img is None:
+                raise FileNotFoundError("Could not find ground_tile.png")
+                
+        except Exception as e:
+            add_debug(f"Failed to load ground tile: {e}")
+            # Create a fallback tile texture
+            ground_tile_img = pygame.Surface((32, 32))
+            ground_tile_img.fill((101, 67, 33))  # Brown
+            pygame.draw.line(ground_tile_img, (76, 153, 0), (0, 0), (32, 0), 5)  # Green grass line
+    
+    # Calculate how many tiles we need based on screen width
+    tile_width = ground_tile_img.get_width()
+    tile_height = ground_tile_img.get_height()
+    
+    # Calculate the starting position based on camera offset
+    start_x = -(int(camera_offset_x) % tile_width)
+    
+    # Calculate how many tiles we need horizontally and vertically
+    tiles_x = (WIDTH // tile_width) + 2  # +2 to ensure we cover the whole screen width
+    tiles_y = ((HEIGHT - GROUND_LEVEL) // tile_height) + 1  # Number of tiles needed vertically
+    
+    # Draw the tiles to create the ground
+    for y in range(tiles_y):
+        for x in range(tiles_x):
+            x_pos = start_x + (x * tile_width)
+            y_pos = GROUND_LEVEL + (y * tile_height)
+            
+            # Don't draw tiles that are completely off-screen
+            if x_pos < -tile_width or x_pos > WIDTH:
+                continue
+                
+            # Draw the tile
+            screen.blit(ground_tile_img, (x_pos, y_pos))
+            
+            # Draw tile borders in debug mode
+            if debug_mode:
+                pygame.draw.rect(screen, (255, 0, 255), 
+                              (x_pos, y_pos, tile_width, tile_height), 1)
