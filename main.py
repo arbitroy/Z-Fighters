@@ -4,13 +4,14 @@ import os
 from game_states import GameStateManager
 from settings import WIDTH, HEIGHT, FPS
 from debug import add_debug, log_to_file
+from level import initialize_level_graphics
 
 # Add startup diagnostics
 def run_diagnostics():
-    """Run startup diagnostics to check for sprite files"""
+    """Run startup diagnostics to check for sprite files and background assets"""
     add_debug("=== STARTUP DIAGNOSTICS ===")
     
-    # Check for assets directory
+    # Check for player sprites
     if os.path.exists("assets"):
         add_debug("Assets directory exists")
         
@@ -44,6 +45,23 @@ def run_diagnostics():
     else:
         add_debug("Assets directory MISSING")
     
+    # Check for background assets
+    background_assets = [
+        "assetpack sky1.png",
+        "assetpack sky2.png",
+        "assetpack bg1.png",
+        "assetpack bg2.png",
+        "assetpack bg3.png",
+        "assetpack smog large.png",
+    ]
+    
+    add_debug("Checking for background assets...")
+    for asset in background_assets:
+        if os.path.exists(asset):
+            add_debug(f"  Found: {asset}")
+        else:
+            add_debug(f"  Missing: {asset}")
+    
     add_debug("=== END DIAGNOSTICS ===")
 
 # Initialize pygame
@@ -51,6 +69,9 @@ pygame.init()
 
 # Run diagnostics before creating the game window
 run_diagnostics()
+
+# Initialize level graphics (which will set up the parallax backgrounds)
+initialize_level_graphics()
 
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

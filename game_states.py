@@ -10,12 +10,15 @@ from settings import (
 )
 from player import Player
 from enemy import Zombie, spawn_wave
-from level import create_level
+from level import create_level, initialize_level_graphics, draw_level_background
 from ui import (
     draw_menu, draw_level_select, draw_controls, 
     draw_gameplay, draw_pause, draw_gameover
 )
 from debug import add_debug, clear_debug
+
+# Initialize the level graphics when the module is imported
+initialize_level_graphics()
 
 class GameState:
     """Base class for all game states"""
@@ -60,6 +63,9 @@ class GameStateManager:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((0, 0, 0))
             print("Background image not found. Using default black background.")
+            
+            # Since we don't have the default background, initialize level graphics here
+            initialize_level_graphics()
     
     def set_state(self, state_id, **kwargs):
         """Change to a different state"""
@@ -140,6 +146,7 @@ class MenuState(GameState):
         pass
     
     def draw(self, screen):
+        # For menu, we'll still use the provided background
         draw_menu(screen, self.game_manager.background, self.selected_option)
 
 class LevelSelectState(GameState):
@@ -356,102 +363,3 @@ class GameplayState(GameState):
                     self.wave_enemies_remaining
                 )
                 add_debug(f"Wave {self.wave}/{MAX_WAVES} started! Enemies: {self.wave_enemies_remaining}")
-    
-    def draw(self, screen):
-        draw_gameplay(
-            screen, self.player, self.platforms, self.obstacles, self.enemies, 
-            self.projectiles, self.score, self.wave, 
-            self.camera_offset_x, self.game_manager.debug_mode
-        )
-
-class PauseState(GameState):
-    """Pause menu state"""
-    
-    def __init__(self, game_manager, gameplay_state):
-        super().__init__(game_manager)
-        self.gameplay_state = gameplay_state
-        self.selected_option = 0
-        
-        # Create a screenshot of the gameplay to display behind the pause menu
-        self.gameplay_screenshot = pygame.Surface((WIDTH, HEIGHT))
-        gameplay_state.draw(self.gameplay_screenshot)
-    
-    def handle_events(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.selected_option = (self.selected_option - 1) % len(PAUSE_OPTIONS)
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                self.selected_option = (self.selected_option + 1) % len(PAUSE_OPTIONS)
-            elif event.key == pygame.K_RETURN:
-                if PAUSE_OPTIONS[self.selected_option] == "Resume":
-                    self.game_manager.set_state(GAMEPLAY)
-                elif PAUSE_OPTIONS[self.selected_option] == "Controls":
-                    self.game_manager.set_state(CONTROLS)
-                elif PAUSE_OPTIONS[self.selected_option] == "Quit to Menu":
-                    self.game_manager.set_state(MENU)
-            elif event.key == pygame.K_ESCAPE:
-                self.game_manager.set_state(GAMEPLAY)
-    
-    def update(self):
-        pass
-    
-    def draw(self, screen):
-        draw_pause(screen, self.gameplay_screenshot, self.selected_option)
-
-class GameOverState(GameState):
-    """Game over state"""
-    
-    def __init__(self, game_manager, score):
-        super().__init__(game_manager)
-        self.score = score
-        self.selected_option = 0
-    
-    def handle_events(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.selected_option = (self.selected_option - 1) % len(GAMEOVER_OPTIONS)
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                self.selected_option = (self.selected_option + 1) % len(GAMEOVER_OPTIONS)
-            elif event.key == pygame.K_RETURN:
-                if GAMEOVER_OPTIONS[self.selected_option] == "Try Again":
-                    self.game_manager.set_state(GAMEPLAY, restart=True)
-                elif GAMEOVER_OPTIONS[self.selected_option] == "Main Menu":
-                    self.game_manager.set_state(MENU)
-    
-    def update(self):
-        pass
-    
-    def draw(self, screen):
-        draw_gameover(screen, self.score, self.selected_option)
-
-
-class VictoryState(GameState):
-    """Victory state when player completes all waves"""
-    
-    def __init__(self, game_manager, score, wave, level):
-        super().__init__(game_manager)
-        self.score = score
-        self.wave = wave
-        self.level = level
-        self.selected_option = 0
-    
-    def handle_events(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.selected_option = (self.selected_option - 1) % len(VICTORY_OPTIONS)
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                self.selected_option = (self.selected_option + 1) % len(VICTORY_OPTIONS)
-            elif event.key == pygame.K_RETURN:
-                if VICTORY_OPTIONS[self.selected_option] == "Next Level":
-                    # For now, just restart at level 1 since we only have implementation for level 1
-                    next_level = min(self.level + 1, 2)  # Max level is 2 for now
-                    self.game_manager.set_state(GAMEPLAY, level=next_level, restart=True)
-                elif VICTORY_OPTIONS[self.selected_option] == "Main Menu":
-                    self.game_manager.set_state(MENU)
-    
-    def update(self):
-        pass
-    
-    def draw(self, screen):
-        from ui import draw_victory
-        draw_victory(screen, self.score, self.wave, self.selected_option)

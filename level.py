@@ -2,7 +2,9 @@
 Level management classes and functions
 """
 import pygame
+import os
 from settings import WIDTH, HEIGHT, GROUND_LEVEL, GRAY
+from parallax import create_parallax_background
 
 class Platform:
     """Platform class for player to stand on"""
@@ -69,8 +71,20 @@ class Obstacle:
                 self.y < y + height and
                 self.y + self.height > y)
 
+# Create a parallax background instance
+parallax_background = None
+
+def initialize_level_graphics():
+    """Initialize level graphics, including the parallax background"""
+    global parallax_background
+    parallax_background = create_parallax_background()
+
 def create_level(level_number):
     """Create and return platforms and obstacles for the specified level"""
+    # Make sure the level graphics are initialized
+    if parallax_background is None:
+        initialize_level_graphics()
+        
     platforms = []
     obstacles = []
     
@@ -153,29 +167,47 @@ def create_level(level_number):
     
     return platforms, obstacles
 
-def draw_level_background(screen):
-    """Draw the level background (sky, ground, etc.)"""
-    # Draw sky
-    screen.fill((135, 206, 235))  # Sky blue
+def draw_level_background(screen, camera_offset_x=0):
+    """
+    Draw the level background (sky, ground, etc.) with parallax scrolling
     
-    # Draw some clouds
-    clouds = [
-        (50, 50, 100, 40),
-        (200, 80, 150, 50),
-        (400, 40, 120, 30),
-        (600, 90, 140, 45)
-    ]
+    Args:
+        screen (pygame.Surface): The screen to draw on
+        camera_offset_x (float): The camera's x offset for parallax effect
+    """
+    # Check if parallax background is initialized
+    global parallax_background
+    if parallax_background is None:
+        initialize_level_graphics()
     
-    for cloud in clouds:
-        x, y, width, height = cloud
-        # Base cloud shape
-        pygame.draw.ellipse(screen, (255, 255, 255), (x, y, width, height))
-        pygame.draw.ellipse(screen, (255, 255, 255), (x + width//4, y - height//2, width//2, height))
-        pygame.draw.ellipse(screen, (255, 255, 255), (x + width//3, y + height//3, width//2, height//2))
+    # Update and draw the parallax background
+    parallax_background.update(camera_offset_x)
+    parallax_background.draw(screen)
     
-    # Draw distant mountains
-    pygame.draw.polygon(screen, (100, 100, 100), [(0, 200), (100, 120), (200, 180), (300, 100), (400, 160), (WIDTH, 200)])
+    # If no parallax background layers were loaded, fall back to the original background
+    if len(parallax_background.layers) == 0:
+        # Draw sky
+        screen.fill((135, 206, 235))  # Sky blue
+        
+        # Draw some clouds
+        clouds = [
+            (50, 50, 100, 40),
+            (200, 80, 150, 50),
+            (400, 40, 120, 30),
+            (600, 90, 140, 45)
+        ]
+        
+        for cloud in clouds:
+            x, y, width, height = cloud
+            # Base cloud shape
+            pygame.draw.ellipse(screen, (255, 255, 255), (x, y, width, height))
+            pygame.draw.ellipse(screen, (255, 255, 255), (x + width//4, y - height//2, width//2, height))
+            pygame.draw.ellipse(screen, (255, 255, 255), (x + width//3, y + height//3, width//2, height//2))
+        
+        # Draw distant mountains
+        pygame.draw.polygon(screen, (100, 100, 100), [(0, 200), (100, 120), (200, 180), (300, 100), (400, 160), (WIDTH, 200)])
     
-    # Draw ground
+    # Always draw ground
+    # This is drawn after the parallax background to ensure it's on top
     pygame.draw.rect(screen, (101, 67, 33), (0, GROUND_LEVEL, WIDTH, HEIGHT - GROUND_LEVEL))  # Brown ground
     pygame.draw.rect(screen, (76, 153, 0), (0, GROUND_LEVEL, WIDTH, 5))  # Green grass line
