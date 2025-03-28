@@ -49,8 +49,8 @@ VICTORY_OPTIONS = ["Next Level", "Main Menu"]
 MAX_WAVES = 10  # Number of waves to complete for victory
 
 # In settings.py
-PLAYER_WIDTH = 32  # Set to match sprite width
-PLAYER_HEIGHT = 32  # Set to match sprite height
+PLAYER_WIDTH = 15  # Set to match sprite width
+PLAYER_HEIGHT = 21  # Set to match sprite height
 PLAYER_SPEED = 5
 PLAYER_MAX_HEALTH = 100
 PLAYER_JUMP_POWER = -12  # Negative because up is negative in pygame
