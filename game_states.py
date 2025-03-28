@@ -10,15 +10,14 @@ from settings import (
 )
 from player import Player
 from enemy import Zombie, spawn_wave
-from level import create_level, initialize_level_graphics, draw_level_background
 from ui import (
     draw_menu, draw_level_select, draw_controls, 
-    draw_gameplay, draw_pause, draw_gameover
+    draw_gameplay, draw_pause, draw_gameover, draw_victory
 )
 from debug import add_debug, clear_debug
 
-# Initialize the level graphics when the module is imported
-initialize_level_graphics()
+# Initialize level graphics only when needed, not at module import
+# This prevents loading images before pygame.display is initialized
 
 class GameState:
     """Base class for all game states"""
@@ -42,6 +41,10 @@ class GameStateManager:
     """Manages game states and transitions between them"""
     
     def __init__(self):
+        # Initialize level graphics now that display is set up
+        from level import initialize_level_graphics
+        initialize_level_graphics()
+        
         self.states = {
             MENU: MenuState(self),
             LEVELSELECT: LevelSelectState(self),
@@ -63,9 +66,6 @@ class GameStateManager:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((0, 0, 0))
             print("Background image not found. Using default black background.")
-            
-            # Since we don't have the default background, initialize level graphics here
-            initialize_level_graphics()
     
     def set_state(self, state_id, **kwargs):
         """Change to a different state"""
@@ -201,6 +201,7 @@ class GameplayState(GameState):
         self.player = Player(100, GROUND_LEVEL - 60)
         
         # Level setup
+        from level import create_level
         self.platforms, self.obstacles = create_level(level)
         
         # Game elements
@@ -363,3 +364,130 @@ class GameplayState(GameState):
                     self.wave_enemies_remaining
                 )
                 add_debug(f"Wave {self.wave}/{MAX_WAVES} started! Enemies: {self.wave_enemies_remaining}")
+    
+    def draw(self, screen):
+        """Draw the gameplay state"""
+        from level import draw_level_background
+        
+        # Draw level background with parallax effect
+        draw_level_background(screen, self.camera_offset_x)
+        
+        # Draw platforms
+        for platform in self.platforms:
+            platform.draw(screen, self.camera_offset_x)
+        
+        # Draw obstacles
+        for obstacle in self.obstacles:
+            obstacle.draw(screen, self.camera_offset_x)
+        
+        # Draw player
+        self.player.draw(screen, self.game_manager.debug_mode)
+        
+        # Draw enemies
+        for enemy in self.enemies:
+            enemy.draw(screen, self.camera_offset_x, self.game_manager.debug_mode)
+        
+        # Draw projectiles
+        for projectile in self.projectiles:
+            projectile.draw(screen, self.camera_offset_x, self.game_manager.debug_mode)
+        
+        # Draw UI elements - use the function name that's actually defined in ui.py
+        from ui import draw_gameplay
+        draw_gameplay(screen, self.player, self.platforms, self.obstacles, self.enemies, 
+                    self.projectiles, self.score, self.wave, self.camera_offset_x,
+                    self.game_manager.debug_mode)
+
+class GameOverState(GameState):
+    """Game over state showing score and restart options"""
+    
+    def __init__(self, game_manager, score):
+        super().__init__(game_manager)
+        self.score = score
+        self.selected_option = 0
+    
+    def handle_events(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
+                self.selected_option = (self.selected_option - 1) % len(GAMEOVER_OPTIONS)
+            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                self.selected_option = (self.selected_option + 1) % len(GAMEOVER_OPTIONS)
+            elif event.key == pygame.K_RETURN:
+                if GAMEOVER_OPTIONS[self.selected_option] == "Try Again":
+                    self.game_manager.set_state(GAMEPLAY, restart=True)
+                elif GAMEOVER_OPTIONS[self.selected_option] == "Main Menu":
+                    self.game_manager.set_state(MENU)
+    
+    def update(self):
+        pass
+    
+    def draw(self, screen):
+        draw_gameover(screen, self.score, self.selected_option)
+
+class PauseState(GameState):
+    """Pause menu state"""
+    
+    def __init__(self, game_manager, gameplay_state):
+        super().__init__(game_manager)
+        self.gameplay_state = gameplay_state
+        self.selected_option = 0
+        
+        # Create a screenshot of the current gameplay
+        self.gameplay_screen = pygame.Surface((WIDTH, HEIGHT))
+        self.gameplay_screen.blit(pygame.display.get_surface(), (0, 0))
+    
+    def handle_events(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                # Resume game when ESC is pressed again
+                self.game_manager.current_state = GAMEPLAY
+            elif event.key == pygame.K_UP or event.key == pygame.K_w:
+                self.selected_option = (self.selected_option - 1) % len(PAUSE_OPTIONS)
+            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                self.selected_option = (self.selected_option + 1) % len(PAUSE_OPTIONS)
+            elif event.key == pygame.K_RETURN:
+                if PAUSE_OPTIONS[self.selected_option] == "Resume":
+                    self.game_manager.current_state = GAMEPLAY
+                elif PAUSE_OPTIONS[self.selected_option] == "Controls":
+                    self.game_manager.set_state(CONTROLS)
+                elif PAUSE_OPTIONS[self.selected_option] == "Quit to Menu":
+                    self.game_manager.set_state(MENU)
+    
+    def update(self):
+        pass
+    
+    def draw(self, screen):
+        draw_pause(screen, self.gameplay_screen, self.selected_option)
+
+class VictoryState(GameState):
+    """Victory state showing score and completion info"""
+    
+    def __init__(self, game_manager, score, wave, level):
+        super().__init__(game_manager)
+        self.score = score
+        self.wave = wave
+        self.level = level
+        self.selected_option = 0
+    
+    def handle_events(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
+                self.selected_option = (self.selected_option - 1) % len(VICTORY_OPTIONS)
+            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                self.selected_option = (self.selected_option + 1) % len(VICTORY_OPTIONS)
+            elif event.key == pygame.K_RETURN:
+                if VICTORY_OPTIONS[self.selected_option] == "Next Level":
+                    # Try to load next level or go to menu if there is no next level
+                    next_level = self.level + 1
+                    if next_level <= 2:  # Assuming we have 2 levels
+                        self.game_manager.set_state(GAMEPLAY, level=next_level, restart=True)
+                    else:
+                        # No more levels, go back to menu
+                        self.game_manager.set_state(MENU)
+                elif VICTORY_OPTIONS[self.selected_option] == "Main Menu":
+                    self.game_manager.set_state(MENU)
+    
+    def update(self):
+        pass
+    
+    def draw(self, screen):
+        draw_victory(screen, self.score, self.wave, self.selected_option)

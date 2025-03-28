@@ -4,7 +4,24 @@ Level management classes and functions
 import pygame
 import os
 from settings import WIDTH, HEIGHT, GROUND_LEVEL, GRAY
-from parallax import create_parallax_background
+
+# Create a parallax background instance - will be initialized later
+parallax_background = None
+
+def initialize_level_graphics():
+    """Initialize level graphics, including the parallax background"""
+    global parallax_background
+    
+    # We'll import create_parallax_background here to avoid premature loading
+    # This function should be called after pygame.display.set_mode() is called
+    from parallax import create_parallax_background
+    
+    # Create the parallax background
+    parallax_background = create_parallax_background()
+    
+    # Log initialization
+    from debug import add_debug
+    add_debug(f"Level graphics initialized with {len(parallax_background.layers) if parallax_background else 0} parallax layers")
 
 class Platform:
     """Platform class for player to stand on"""
@@ -70,14 +87,6 @@ class Obstacle:
                 self.x + self.width > x and
                 self.y < y + height and
                 self.y + self.height > y)
-
-# Create a parallax background instance
-parallax_background = None
-
-def initialize_level_graphics():
-    """Initialize level graphics, including the parallax background"""
-    global parallax_background
-    parallax_background = create_parallax_background()
 
 def create_level(level_number):
     """Create and return platforms and obstacles for the specified level"""

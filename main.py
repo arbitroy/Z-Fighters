@@ -1,10 +1,8 @@
 import pygame
 import sys
 import os
-from game_states import GameStateManager
 from settings import WIDTH, HEIGHT, FPS
 from debug import add_debug, log_to_file
-from level import initialize_level_graphics
 
 # Add startup diagnostics
 def run_diagnostics():
@@ -55,60 +53,74 @@ def run_diagnostics():
         "assetpack smog large.png",
     ]
     
-    add_debug("Checking for background assets...")
+    # Check in the root directory
+    add_debug("Checking for background assets in root directory...")
     for asset in background_assets:
         if os.path.exists(asset):
             add_debug(f"  Found: {asset}")
         else:
             add_debug(f"  Missing: {asset}")
     
+    # Check in the assets/background directory
+    add_debug("Checking for background assets in assets/background directory...")
+    for asset in background_assets:
+        asset_path = os.path.join("assets", "background", asset)
+        if os.path.exists(asset_path):
+            add_debug(f"  Found: {asset_path}")
+        else:
+            add_debug(f"  Missing: {asset_path}")
+    
     add_debug("=== END DIAGNOSTICS ===")
 
-# Initialize pygame
-pygame.init()
-
-# Run diagnostics before creating the game window
-run_diagnostics()
-
-# Initialize level graphics (which will set up the parallax backgrounds)
-initialize_level_graphics()
-
-# Create the game window
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Zombie Fighters")
-
-# Create clock for controlling frame rate
-clock = pygame.time.Clock()
-
-# Initialize the game state manager
-game_manager = GameStateManager()
-
-# Main game loop
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def main():
+    # Initialize pygame
+    pygame.init()
+    
+    # Run diagnostics before creating the game window
+    run_diagnostics()
+    
+    # Create the game window
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Zombie Fighters")
+    
+    # Only import game_states after pygame display is initialized
+    from game_states import GameStateManager
+    
+    # Create clock for controlling frame rate
+    clock = pygame.time.Clock()
+    
+    # Initialize the game state manager
+    game_manager = GameStateManager()
+    
+    # Main game loop
+    running = True
+    while running:
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            # Pass events to game state manager
+            game_manager.handle_events(event)
         
-        # Pass events to game state manager
-        game_manager.handle_events(event)
+        # Update current state
+        game_manager.update()
+        
+        # Draw current state
+        game_manager.draw(screen)
+        
+        # Update the display
+        pygame.display.flip()
+        
+        # Control the frame rate
+        clock.tick(FPS)
     
-    # Update current state
-    game_manager.update()
+    # Log game closing
+    add_debug("Game closing")
     
-    # Draw current state
-    game_manager.draw(screen)
-    
-    # Update the display
-    pygame.display.flip()
-    
-    # Control the frame rate
-    clock.tick(FPS)
+    # Quit pygame
+    pygame.quit()
+    sys.exit()
 
-# Log game closing
-add_debug("Game closing")
-
-# Quit pygame
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main()
