@@ -10,10 +10,12 @@ from debug import add_debug
 parallax_background = None
 # Global variable to hold the ground tile image
 ground_tile_img = None
+# Global variable for platform tile image
+platform_tile_img = None
 
 def initialize_level_graphics():
     """Initialize level graphics, including the parallax background"""
-    global parallax_background
+    global parallax_background, platform_tile_img
     
     # We'll import create_parallax_background here to avoid premature loading
     # This function should be called after pygame.display.set_mode() is called
@@ -21,6 +23,19 @@ def initialize_level_graphics():
     
     # Create the parallax background
     parallax_background = create_parallax_background()
+    
+    # Load platform tile
+    try:
+        platform_path = os.path.join('assets', 'environment', 'platform.png')
+        if os.path.exists(platform_path):
+            platform_tile_img = pygame.image.load(platform_path).convert_alpha()
+            add_debug(f"Platform tile loaded from {platform_path}")
+        else:
+            add_debug(f"Platform tile not found at {platform_path}")
+            platform_tile_img = None
+    except Exception as e:
+        add_debug(f"Error loading platform tile: {e}")
+        platform_tile_img = None
     
     # Log initialization
     from debug import add_debug
@@ -38,6 +53,41 @@ class Platform:
         self.is_hazard = is_hazard  # Whether this platform damages the player
         # Check if color has alpha channel (transparency)
         self.has_transparency = isinstance(color, tuple) and len(color) == 4
+        
+        # Create platform surface based on the platform_tile_img
+        self.surface = self.create_platform_surface()
+    
+    def create_platform_surface(self):
+        """Create a surface for the platform using the tile image"""
+        global platform_tile_img
+        
+        # If platform tile not loaded or we have a transparent platform, return None
+        if platform_tile_img is None or (self.has_transparency and self.color[3] == 0):
+            return None
+            
+        # Create a surface for the platform
+        platform_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        
+        # Get tile dimensions
+        tile_width = platform_tile_img.get_width()
+        tile_height = platform_tile_img.get_height()
+        
+        # Calculate how many tiles we need horizontally
+        tiles_x = max(1, self.width // tile_width)
+        remaining_width = self.width % tile_width
+        
+        # Draw the middle tiles (repeated)
+        for i in range(tiles_x):
+            # Draw full tiles
+            platform_surface.blit(platform_tile_img, (i * tile_width, 0))
+        
+        # If there's remaining width, draw a partial tile
+        if remaining_width > 0:
+            # Create a subsurface for the partial tile
+            partial_tile = platform_tile_img.subsurface((0, 0, remaining_width, tile_height))
+            platform_surface.blit(partial_tile, (tiles_x * tile_width, 0))
+        
+        return platform_surface
     
     def draw(self, screen, camera_offset_x):
         """Draw the platform on the screen with camera offset"""
@@ -45,14 +95,19 @@ class Platform:
         
         # Only draw if the platform isn't fully transparent
         if not self.has_transparency or self.color[3] > 0:
-            if self.has_transparency:
-                # Create a surface with per-pixel alpha
-                platform_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-                platform_surface.fill(self.color)
-                screen.blit(platform_surface, (screen_x, self.y))
+            if self.surface:
+                # If we have a platform surface, draw it
+                screen.blit(self.surface, (int(screen_x), int(self.y)))
             else:
-                # Regular drawing for non-transparent platforms
-                pygame.draw.rect(screen, self.color, (screen_x, self.y, self.width, self.height))
+                # Fallback to rectangle if no surface
+                if self.has_transparency:
+                    # Create a surface with per-pixel alpha
+                    platform_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+                    platform_surface.fill(self.color)
+                    screen.blit(platform_surface, (screen_x, self.y))
+                else:
+                    # Regular drawing for non-transparent platforms
+                    pygame.draw.rect(screen, self.color, (screen_x, self.y, self.width, self.height))
     
     def check_collision(self, x, y, width, height):
         """Check if the platform collides with the given rectangle"""
