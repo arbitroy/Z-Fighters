@@ -3,6 +3,10 @@ Game constants and settings
 """
 import pygame
 
+# Initialize pygame (if not already done)
+if not pygame.get_init():
+    pygame.init()
+
 # Game constants
 WIDTH = 800
 HEIGHT = 600

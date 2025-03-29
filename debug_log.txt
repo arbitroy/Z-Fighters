@@ -1,86 +1,349 @@
-=== Debug Log Started at 2025-03-28 16:06:32 ===
+=== Debug Log Started at 2025-03-29 13:05:53 ===
 
-[16:06:32] === STARTUP DIAGNOSTICS ===
-[16:06:32] Assets directory exists
-[16:06:32] Player assets directory exists
-[16:06:32] Found 16 files in assets/player/
-[16:06:32] Idle right sprites: 4
-[16:06:32] Walking right sprites: 4
-[16:06:32] Idle left sprites: 4
-[16:06:32] Walking left sprites: 4
-[16:06:32]   Found: idle_left_0.png
-[16:06:32]   Found: idle_left_1.png
-[16:06:32]   Found: idle_left_2.png
-[16:06:32]   Found: idle_left_3.png
-[16:06:32]   Found: idle_right_0.png
-[16:06:32]   Found: idle_right_1.png
-[16:06:32]   Found: idle_right_2.png
-[16:06:32]   Found: idle_right_3.png
-[16:06:32]   Found: walking_left_0.png
-[16:06:32]   Found: walking_left_1.png
-[16:06:32]   Found: walking_left_2.png
-[16:06:32]   Found: walking_left_3.png
-[16:06:32]   Found: walking_right_0.png
-[16:06:32]   Found: walking_right_1.png
-[16:06:32]   Found: walking_right_2.png
-[16:06:32]   Found: walking_right_3.png
-[16:06:32] Checking for background assets in root directory...
-[16:06:32]   Missing: assetpack sky1.png
-[16:06:32]   Missing: assetpack sky2.png
-[16:06:32]   Missing: assetpack bg1.png
-[16:06:32]   Missing: assetpack bg2.png
-[16:06:32]   Missing: assetpack bg3.png
-[16:06:32]   Missing: assetpack smog large.png
-[16:06:32] Checking for background assets in assets/background directory...
-[16:06:32]   Found: assets\background\assetpack sky1.png
-[16:06:32]   Found: assets\background\assetpack sky2.png
-[16:06:32]   Found: assets\background\assetpack bg1.png
-[16:06:32]   Found: assets\background\assetpack bg2.png
-[16:06:32]   Found: assets\background\assetpack bg3.png
-[16:06:32]   Found: assets\background\assetpack smog large.png
-[16:06:32] === END DIAGNOSTICS ===
-[16:06:32] Looking for parallax assets in assets/background/...
-[16:06:32] Found assets\background\assetpack sky1.png
-[16:06:32] Found assets\background\assetpack bg3.png
-[16:06:32] Found assets\background\assetpack bg2.png
-[16:06:32] Found assets\background\assetpack bg1.png
-[16:06:32] Found assets\background\assetpack smog large.png
-[16:06:32] Added 5 parallax layers
-[16:06:32] Level graphics initialized with 5 parallax layers
-[16:06:35] Player: Initializing sprite system
-[16:06:35] Player: Loading sprites...
-[16:06:35] Player: Loaded and scaled assets/player/idle_right_0.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/idle_right_1.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/idle_right_2.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/idle_right_3.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/walking_right_0.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/walking_right_1.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/walking_right_2.png, new size: (40, 60)
-[16:06:35] Player: Loaded and scaled assets/player/walking_right_3.png, new size: (40, 60)
-[16:06:35] Player: Initialization complete
-[16:06:35] Spawned 6 zombies
+[13:05:53] === STARTUP DIAGNOSTICS ===
+[13:05:53] Assets directory exists
+[13:05:53] Player assets directory exists
+[13:05:53] Found 16 files in assets/player/
+[13:05:53] Idle right sprites: 4
+[13:05:53] Walking right sprites: 4
+[13:05:53] Idle left sprites: 4
+[13:05:53] Walking left sprites: 4
+[13:05:53]   Found: idle_left_0.png
+[13:05:53]   Found: idle_left_1.png
+[13:05:53]   Found: idle_left_2.png
+[13:05:53]   Found: idle_left_3.png
+[13:05:53]   Found: idle_right_0.png
+[13:05:53]   Found: idle_right_1.png
+[13:05:53]   Found: idle_right_2.png
+[13:05:53]   Found: idle_right_3.png
+[13:05:53]   Found: walking_left_0.png
+[13:05:53]   Found: walking_left_1.png
+[13:05:53]   Found: walking_left_2.png
+[13:05:53]   Found: walking_left_3.png
+[13:05:53]   Found: walking_right_0.png
+[13:05:53]   Found: walking_right_1.png
+[13:05:53]   Found: walking_right_2.png
+[13:05:53]   Found: walking_right_3.png
+[13:05:53] Checking for background assets in root directory...
+[13:05:53]   Missing: assetpack sky1.png
+[13:05:53]   Missing: assetpack sky2.png
+[13:05:53]   Missing: assetpack bg1.png
+[13:05:53]   Missing: assetpack bg2.png
+[13:05:53]   Missing: assetpack bg3.png
+[13:05:53]   Missing: assetpack smog large.png
+[13:05:53] Checking for background assets in assets/background directory...
+[13:05:53]   Found: assets\background\assetpack sky1.png
+[13:05:53]   Found: assets\background\assetpack sky2.png
+[13:05:53]   Found: assets\background\assetpack bg1.png
+[13:05:53]   Found: assets\background\assetpack bg2.png
+[13:05:53]   Found: assets\background\assetpack bg3.png
+[13:05:53]   Found: assets\background\assetpack smog large.png
+[13:05:53] === END DIAGNOSTICS ===
+[13:05:53] Looking for parallax assets in assets/background/...
+[13:05:53] Found assets\background\assetpack sky1.png
+[13:05:53] Found assets\background\assetpack bg3.png
+[13:05:53] Found assets\background\assetpack bg2.png
+[13:05:53] Found assets\background\assetpack bg1.png
+[13:05:53] Found assets\background\assetpack smog large.png
+[13:05:53] Added 5 parallax layers
+[13:05:53] Level graphics initialized with 5 parallax layers
+[13:05:54] Player: Initializing sprite system
+[13:05:54] Player: Loading sprites...
+[13:05:54] Player: Loaded and scaled assets/player/idle_right_0.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/idle_right_1.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/idle_right_2.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/idle_right_3.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/walking_right_0.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/walking_right_1.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/walking_right_2.png, new size: (40, 60)
+[13:05:54] Player: Loaded and scaled assets/player/walking_right_3.png, new size: (40, 60)
+[13:05:54] Player: Initialization complete
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Zombie: Loading sprites...
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:05:54] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:05:54] Spawned 6 zombies
 --- Debug messages cleared ---
-[16:06:36] Ground tile loaded from assets\environment\ground_tile.png
-[16:06:39] Player jumped
-[16:06:41] Player jumped
-[16:06:46] Debug mode enabled
-[16:08:50] Projectile created at (315.0, 350.0)
-[16:08:51] Projectile created at (315.0, 350.0)
-[16:08:55] Player jumped
-[16:08:57] Player jumped
-[16:08:58] Player jumped
-[16:09:04] Projectile created at (315.0, 350.0)
-[16:09:05] Projectile created at (315.0, 350.0)
-[16:09:05] Enemy killed! Score: 100
-[16:09:05] Projectile created at (315.0, 350.0)
-[16:09:05] Projectile created at (315.0, 350.0)
-[16:09:05] Enemy killed! Score: 200
-[16:09:05] Projectile created at (315.0, 350.0)
-[16:09:06] Projectile created at (315.0, 350.0)
-[16:09:06] Enemy killed! Score: 300
-[16:09:06] Projectile created at (315.0, 350.0)
-[16:09:06] Projectile created at (315.0, 350.0)
-[16:09:06] Enemy killed! Score: 400
-[16:09:07] Projectile created at (315.0, 350.0)
-[16:09:44] Player jumped
-[16:09:46] Player jumped
+[13:05:54] Loaded parallax layer: assetpack sky1.png, size: 4320x2160
+[13:05:55] Loaded parallax layer: assetpack bg3.png, size: 4320x2160
+[13:05:55] Loaded parallax layer: assetpack bg2.png, size: 4320x2160
+[13:05:55] Loaded parallax layer: assetpack bg1.png, size: 4320x2160
+[13:05:55] Loaded parallax layer: assetpack smog large.png, size: 4320x2160
+[13:05:55] Ground tile loaded from assets\environment\ground_tile.png
+[13:05:57] Player jumped
+[13:05:58] Player jumped
+[13:06:16] Player hit! Health: 90
+[13:06:16] Player hit! Health: 80
+[13:06:17] Player hit! Health: 70
+[13:06:17] Player hit! Health: 60
+[13:06:18] Player hit! Health: 50
+[13:06:19] Player hit! Health: 40
+[13:06:19] Player hit! Health: 30
+[13:06:23] Debug mode enabled
+[13:06:25] Player hit! Health: 20
+[13:06:25] Player hit! Health: 10
+[13:06:26] Player hit! Health: 0
+[13:07:29] Player: Initializing sprite system
+[13:07:29] Player: Loading sprites...
+[13:07:29] Player: Loaded and scaled assets/player/idle_right_0.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/idle_right_1.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/idle_right_2.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/idle_right_3.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/walking_right_0.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/walking_right_1.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/walking_right_2.png, new size: (40, 60)
+[13:07:29] Player: Loaded and scaled assets/player/walking_right_3.png, new size: (40, 60)
+[13:07:29] Player: Initialization complete
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Zombie: Loading sprites...
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_run_left_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_idle_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_right_3.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_0.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_1.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_2.png
+[13:07:29] Zombie: Loaded assets/enemy/zombie_attack_left_3.png
+[13:07:29] Spawned 6 zombies
+--- Debug messages cleared ---
+[13:07:32] Player jumped
+[13:07:33] Player jumped
+[13:07:35] Player jumped

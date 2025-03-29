@@ -4,11 +4,12 @@ Parallax background system for Zombie Fighters
 import pygame
 import os
 from settings import WIDTH, HEIGHT
+from debug import add_debug
 
 class ParallaxLayer:
     """A single layer in the parallax background system"""
     
-    def __init__(self, image_path, scale=1.0, scroll_speed=1.0):
+    def __init__(self, image_path, scale=1.0, scroll_speed=1.0, y_position=0):
         """
         Initialize a parallax layer
         
@@ -18,6 +19,7 @@ class ParallaxLayer:
             scroll_speed (float): Speed multiplier for parallax effect (default: 1.0)
                                  Values < 1 move slower than the camera (background)
                                  Values > 1 move faster than the camera (foreground)
+            y_position (int): Vertical position to draw the layer (default: 0)
         """
         self.scroll_speed = scroll_speed
         self.offset = 0
@@ -27,6 +29,7 @@ class ParallaxLayer:
         self.height = HEIGHT  # Default height in case loading fails
         self.image = None  # Will be loaded when needed
         self.loaded = False
+        self.y_position = y_position
         
     def load_image(self):
         """Load the image if not already loaded"""
@@ -64,10 +67,11 @@ class ParallaxLayer:
                 self.width = self.image.get_width()
             
             self.loaded = True
+            add_debug(f"Loaded parallax layer: {os.path.basename(self.image_path)}, size: {self.width}x{self.height}")
             return True
                 
         except pygame.error as e:
-            print(f"Error loading parallax image '{self.image_path}': {e}")
+            add_debug(f"Error loading parallax image '{self.image_path}': {e}")
             # Create a placeholder surface
             self.image = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
             self.width = WIDTH
@@ -82,15 +86,19 @@ class ParallaxLayer:
             camera_offset_x (float): The camera's x offset in the world
         """
         # Calculate offset based on camera position and scroll speed
-        self.offset = -(camera_offset_x * self.scroll_speed) % self.width
+        # Fix: Use proper modulo calculation for smooth wrapping
+        # This makes backgrounds with slower scroll_speed move slower
+        raw_offset = -(camera_offset_x * self.scroll_speed)
+        self.offset = raw_offset % self.width
+        if self.offset > 0:
+            self.offset -= self.width
     
-    def draw(self, screen, y_pos=0):
+    def draw(self, screen):
         """
         Draw the layer to the screen
         
         Args:
             screen (pygame.Surface): The screen to draw on
-            y_pos (int): Y position to draw the layer (default: 0)
         """
         # Make sure the image is loaded before drawing
         if not self.loaded:
@@ -99,12 +107,11 @@ class ParallaxLayer:
         if self.image is None:
             return
             
-        # Draw the image and its wrap-around if needed
-        screen.blit(self.image, (self.offset, y_pos))
+        # Draw the image and its wrap-around to fill the screen
+        screen.blit(self.image, (int(self.offset), self.y_position))
         
-        # If the offset creates a gap on the right side, draw the image again
-        if self.offset + self.width < WIDTH:
-            screen.blit(self.image, (self.offset + self.width, y_pos))
+        # Always draw the wrap-around image to ensure continuous scrolling
+        screen.blit(self.image, (int(self.offset + self.width), self.y_position))
 
 class ParallaxBackground:
     """Manager for multiple parallax background layers"""
@@ -113,7 +120,7 @@ class ParallaxBackground:
         """Initialize the parallax background system"""
         self.layers = []
         
-    def add_layer(self, image_path, scale=1.0, scroll_speed=1.0):
+    def add_layer(self, image_path, scale=1.0, scroll_speed=1.0, y_position=0):
         """
         Add a new parallax layer
         
@@ -121,8 +128,9 @@ class ParallaxBackground:
             image_path (str): Path to the image file
             scale (float): Scale factor for the image
             scroll_speed (float): Speed multiplier for parallax effect
+            y_position (int): Vertical position to draw the layer
         """
-        layer = ParallaxLayer(image_path, scale, scroll_speed)
+        layer = ParallaxLayer(image_path, scale, scroll_speed, y_position)
         self.layers.append(layer)
         return layer
     
@@ -143,13 +151,9 @@ class ParallaxBackground:
         Args:
             screen (pygame.Surface): The screen to draw on
         """
-        for i, layer in enumerate(self.layers):
-            # Calculate vertical position based on layer index
-            # This is a simple implementation - you might want to customize this
-            y_pos = 0
-            
-            # Draw the layer
-            layer.draw(screen, y_pos)
+        # Draw layers from back to front
+        for layer in self.layers:
+            layer.draw(screen)
 
 def create_parallax_background():
     """
@@ -181,64 +185,64 @@ def create_parallax_background():
     }
     
     # Log asset paths attempts
-    from debug import add_debug
     add_debug("Looking for parallax assets in assets/background/...")
     
-    # Check which assets exist and add them
+    # Calculate vertical positions for each layer to create a better scene
+    # Sky at the top (0)
+    sky_y = 0
+    # Far buildings should be higher on the screen than close buildings
+    far_city_y = 50
+    mid_city_y = 80
+    close_city_y = 100
+    smog_y = 120
+    
+    # Check which assets exist and add them - ORDER MATTERS (back to front)
     
     # Sky (slowest moving - farthest back)
     if os.path.exists(asset_paths['sky1']):
         add_debug(f"Found {asset_paths['sky1']}")
-        parallax.add_layer(asset_paths['sky1'], scale=1.0, scroll_speed=0.0)
+        parallax.add_layer(asset_paths['sky1'], scale=1.0, scroll_speed=0.0, y_position=sky_y)
     elif os.path.exists(alt_paths['sky1']):
         add_debug(f"Found {alt_paths['sky1']} in root")
-        parallax.add_layer(alt_paths['sky1'], scale=1.0, scroll_speed=0.0)
+        parallax.add_layer(alt_paths['sky1'], scale=1.0, scroll_speed=0.0, y_position=sky_y)
     elif os.path.exists(asset_paths['sky2']):
         add_debug(f"Found {asset_paths['sky2']}")
-        parallax.add_layer(asset_paths['sky2'], scale=1.0, scroll_speed=0.0)
+        parallax.add_layer(asset_paths['sky2'], scale=1.0, scroll_speed=0.0, y_position=sky_y)
     elif os.path.exists(alt_paths['sky2']):
         add_debug(f"Found {alt_paths['sky2']} in root")
-        parallax.add_layer(alt_paths['sky2'], scale=1.0, scroll_speed=0.0)
+        parallax.add_layer(alt_paths['sky2'], scale=1.0, scroll_speed=0.0, y_position=sky_y)
     else:
         add_debug("No sky background found")
     
-    # Background city silhouettes
+    # Background city silhouettes (ordered from back to front)
     if os.path.exists(asset_paths['bg3']):
         add_debug(f"Found {asset_paths['bg3']}")
-        parallax.add_layer(asset_paths['bg3'], scale=1.0, scroll_speed=0.1)
+        parallax.add_layer(asset_paths['bg3'], scale=1.0, scroll_speed=0.15, y_position=far_city_y)
     elif os.path.exists(alt_paths['bg3']):
         add_debug(f"Found {alt_paths['bg3']} in root")
-        parallax.add_layer(alt_paths['bg3'], scale=1.0, scroll_speed=0.1)
-    else:
-        add_debug("No bg3 background found")
+        parallax.add_layer(alt_paths['bg3'], scale=1.0, scroll_speed=0.15, y_position=far_city_y)
     
     if os.path.exists(asset_paths['bg2']):
         add_debug(f"Found {asset_paths['bg2']}")
-        parallax.add_layer(asset_paths['bg2'], scale=1.0, scroll_speed=0.2)
+        parallax.add_layer(asset_paths['bg2'], scale=1.0, scroll_speed=0.3, y_position=mid_city_y)
     elif os.path.exists(alt_paths['bg2']):
         add_debug(f"Found {alt_paths['bg2']} in root")
-        parallax.add_layer(alt_paths['bg2'], scale=1.0, scroll_speed=0.2)
-    else:
-        add_debug("No bg2 background found")
+        parallax.add_layer(alt_paths['bg2'], scale=1.0, scroll_speed=0.3, y_position=mid_city_y)
     
     if os.path.exists(asset_paths['bg1']):
         add_debug(f"Found {asset_paths['bg1']}")
-        parallax.add_layer(asset_paths['bg1'], scale=1.0, scroll_speed=0.3)
+        parallax.add_layer(asset_paths['bg1'], scale=1.0, scroll_speed=0.5, y_position=close_city_y)
     elif os.path.exists(alt_paths['bg1']):
         add_debug(f"Found {alt_paths['bg1']} in root")
-        parallax.add_layer(alt_paths['bg1'], scale=1.0, scroll_speed=0.3)
-    else:
-        add_debug("No bg1 background found")
+        parallax.add_layer(alt_paths['bg1'], scale=1.0, scroll_speed=0.5, y_position=close_city_y)
     
     # Atmospheric effects (smog, fog, etc.)
     if os.path.exists(asset_paths['smog']):
         add_debug(f"Found {asset_paths['smog']}")
-        parallax.add_layer(asset_paths['smog'], scale=1.0, scroll_speed=0.4)
+        parallax.add_layer(asset_paths['smog'], scale=1.0, scroll_speed=0.7, y_position=smog_y)
     elif os.path.exists(alt_paths['smog']):
         add_debug(f"Found {alt_paths['smog']} in root")
-        parallax.add_layer(alt_paths['smog'], scale=1.0, scroll_speed=0.4)
-    else:
-        add_debug("No smog effect found")
+        parallax.add_layer(alt_paths['smog'], scale=1.0, scroll_speed=0.7, y_position=smog_y)
     
     add_debug(f"Added {len(parallax.layers)} parallax layers")
     

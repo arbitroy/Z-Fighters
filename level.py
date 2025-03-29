@@ -36,11 +36,23 @@ class Platform:
         self.height = height
         self.color = color
         self.is_hazard = is_hazard  # Whether this platform damages the player
+        # Check if color has alpha channel (transparency)
+        self.has_transparency = isinstance(color, tuple) and len(color) == 4
     
     def draw(self, screen, camera_offset_x):
         """Draw the platform on the screen with camera offset"""
         screen_x = self.x - camera_offset_x
-        pygame.draw.rect(screen, self.color, (screen_x, self.y, self.width, self.height))
+        
+        # Only draw if the platform isn't fully transparent
+        if not self.has_transparency or self.color[3] > 0:
+            if self.has_transparency:
+                # Create a surface with per-pixel alpha
+                platform_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+                platform_surface.fill(self.color)
+                screen.blit(platform_surface, (screen_x, self.y))
+            else:
+                # Regular drawing for non-transparent platforms
+                pygame.draw.rect(screen, self.color, (screen_x, self.y, self.width, self.height))
     
     def check_collision(self, x, y, width, height):
         """Check if the platform collides with the given rectangle"""
@@ -102,7 +114,9 @@ def create_level(level_number):
     
     if level_number == 1:
         # Ground platform (spans the entire level)
-        ground = Platform(0, GROUND_LEVEL, WIDTH * 4, HEIGHT - GROUND_LEVEL)
+        # Make it invisible by setting a transparent color
+        # Use tuple with alpha value (R,G,B,A) where A=0 for full transparency
+        ground = Platform(0, GROUND_LEVEL, WIDTH * 4, HEIGHT - GROUND_LEVEL, color=(0, 0, 0, 0))
         platforms.append(ground)
         
         # Add some floating platforms
@@ -139,7 +153,7 @@ def create_level(level_number):
     
     elif level_number == 2:
         # Ground platform (spans the entire level)
-        ground = Platform(0, GROUND_LEVEL, WIDTH * 5, HEIGHT - GROUND_LEVEL)
+        ground = Platform(0, GROUND_LEVEL, WIDTH * 5, HEIGHT - GROUND_LEVEL, color=(0, 0, 0, 0))
         platforms.append(ground)
         
         # Create a more complex level with multiple paths
@@ -260,6 +274,10 @@ def draw_ground_tiles(screen, camera_offset_x, debug_mode=False):
             ground_tile_img.fill((101, 67, 33))  # Brown
             pygame.draw.line(ground_tile_img, (76, 153, 0), (0, 0), (32, 0), 5)  # Green grass line
     
+    # Draw a solid dirt rectangle below ground level
+    dirt_color = (101, 67, 33)  # Brown dirt color
+    pygame.draw.rect(screen, dirt_color, (0, GROUND_LEVEL + ground_tile_img.get_height(), WIDTH, HEIGHT - (GROUND_LEVEL + ground_tile_img.get_height())))
+    
     # Calculate how many tiles we need based on screen width
     tile_width = ground_tile_img.get_width()
     tile_height = ground_tile_img.get_height()
@@ -267,24 +285,21 @@ def draw_ground_tiles(screen, camera_offset_x, debug_mode=False):
     # Calculate the starting position based on camera offset
     start_x = -(int(camera_offset_x) % tile_width)
     
-    # Calculate how many tiles we need horizontally and vertically
+    # Calculate how many tiles we need horizontally
     tiles_x = (WIDTH // tile_width) + 2  # +2 to ensure we cover the whole screen width
-    tiles_y = ((HEIGHT - GROUND_LEVEL) // tile_height) + 1  # Number of tiles needed vertically
     
-    # Draw the tiles to create the ground
-    for y in range(tiles_y):
-        for x in range(tiles_x):
-            x_pos = start_x + (x * tile_width)
-            y_pos = GROUND_LEVEL + (y * tile_height)
+    # Draw just ONE row of tiles at GROUND_LEVEL
+    for x in range(tiles_x):
+        x_pos = start_x + (x * tile_width)
+        
+        # Don't draw tiles that are completely off-screen
+        if x_pos < -tile_width or x_pos > WIDTH:
+            continue
             
-            # Don't draw tiles that are completely off-screen
-            if x_pos < -tile_width or x_pos > WIDTH:
-                continue
-                
-            # Draw the tile
-            screen.blit(ground_tile_img, (x_pos, y_pos))
-            
-            # Draw tile borders in debug mode
-            if debug_mode:
-                pygame.draw.rect(screen, (255, 0, 255), 
-                              (x_pos, y_pos, tile_width, tile_height), 1)
+        # Draw the tile at ground level
+        screen.blit(ground_tile_img, (x_pos, GROUND_LEVEL))
+        
+        # Draw tile borders in debug mode
+        if debug_mode:
+            pygame.draw.rect(screen, (255, 0, 255), 
+                          (x_pos, GROUND_LEVEL, tile_width, tile_height), 1)
