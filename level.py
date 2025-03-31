@@ -4,7 +4,7 @@ Level management classes and functions
 import pygame
 import os
 from settings import WIDTH, HEIGHT, GROUND_LEVEL, GRAY
-from debug import add_debug
+from debug import add_debug  # Import at the top level
 
 # Create a parallax background instance - will be initialized later
 parallax_background = None
@@ -38,7 +38,6 @@ def initialize_level_graphics():
         platform_tile_img = None
     
     # Log initialization
-    from debug import add_debug
     add_debug(f"Level graphics initialized with {len(parallax_background.layers) if parallax_background else 0} parallax layers")
 
 class Platform:
